@@ -7,22 +7,22 @@ import FieldTemplate from "./FieldTemplate";
 const Home = () => {
   const [categories, setCategories] = useState(loadCategoriesFromStorage());
   const [formTitle, setFormTitle] = useState(
-    loadFromLocalStorage("formTitle", "")
+    loadFromLocalStorage("formTitle", ""),
   );
   const [formDesc, setFormDesc] = useState(
-    loadFromLocalStorage("formDesc", "")
+    loadFromLocalStorage("formDesc", ""),
   );
   const [isEditingFormTitle, setIsEditingFormTitle] = useState(false);
   const [isEditingFormDesc, setIsEditingFormDesc] = useState(false);
   const [color, setColor] = useState(
-    loadFromLocalStorage("color", "bg-gray-300")
+    loadFromLocalStorage("color", "bg-gray-300"),
   );
   const [bgImage, setBgImage] = useState(loadFromLocalStorage("bgImage", null));
   const [editingFormId, setEditingFormId] = useState(
-    localStorage.getItem("editingFormId") || null
+    localStorage.getItem("editingFormId") || null,
   );
   const [currentFormId, setCurrentFormId] = useState(
-    localStorage.getItem("currentFormId") || null
+    localStorage.getItem("currentFormId") || null,
   );
   const formRefs = useRef(categories.map(() => null));
   const navigate = useNavigate();
@@ -118,28 +118,41 @@ const Home = () => {
       return;
     }
 
-    const formData = categories.map((category, index) => {
+    const rawFormData = categories.map((category, index) => {
       if (formRefs.current[index]) {
         return formRefs.current[index]();
       }
       return null;
     });
 
+    // ✅ Remove null sections
+    const formData = rawFormData.filter(Boolean);
+
+    // ✅ Validate questionType
+    const hasInvalidQuestion = formData.some((section) =>
+      section.questions?.some(
+        (q) => !q.questionType || q.questionType.trim() === "",
+      ),
+    );
+
+    if (hasInvalidQuestion) {
+      alert("All questions must have a question type selected.");
+      return; // stop API call
+    }
+
     const formDetails = {
       bgColor: color,
-      formTitle: formTitle,
-      formDesc: formDesc,
-      bgImage: bgImage,
-      formData: formData,
+      formTitle,
+      formDesc,
+      bgImage,
+      formData,
     };
 
     try {
       let response;
       const formIdToUpdate = editingFormId || currentFormId;
-      console.log(formIdToUpdate)
 
       if (formIdToUpdate) {
-        // Update existing form
         response = await axios.put(
           `${import.meta.env.VITE_BASE_URL}/api/forms/${formIdToUpdate}`,
           formDetails,
@@ -147,11 +160,10 @@ const Home = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         alert("Form updated successfully!");
       } else {
-        // Create new form
         response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/forms`,
           formDetails,
@@ -159,19 +171,16 @@ const Home = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         alert("Form saved to database successfully!");
 
-        // Store the new form ID so subsequent saves will update instead of create
         const newFormId = response.data._id || response.data.id;
         if (newFormId) {
           localStorage.setItem("currentFormId", newFormId);
           setCurrentFormId(newFormId);
         }
       }
-
-      console.log("Saved form:", response.data);
 
       localStorage.removeItem("categories");
       localStorage.removeItem("formTitle");

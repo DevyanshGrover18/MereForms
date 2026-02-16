@@ -303,7 +303,7 @@ const MyForms = () => {
                       <input
                         type="text"
                         readOnly
-                        value={`${window.location.origin}/submit/${form._id}`}
+                        value={`${import.meta.env.VITE_BASE_URL}/submit/${form._id}`}
                         className="flex-1 text-xs px-2 py-1 border border-green-300 rounded bg-white text-gray-700"
                         onClick={(e) => e.target.select()}
                       />
