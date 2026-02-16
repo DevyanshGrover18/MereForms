@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lora-font: "Lora", serif;
+}
+
+body {
+  font-family: var(--lora-font);
+  font-optical-sizing: auto;
+  font-weight: 400; /* You can set this to any default weight you prefer */
+}

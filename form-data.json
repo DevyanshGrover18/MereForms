@@ -1,0 +1,31 @@
+{
+  "bgColor": "",
+  "formTitle": "",
+  "formDesc": "",
+  "formData": [
+    {
+      "id": 1,
+      "title": "",
+      "questions": [
+        {
+          "question": "",
+          "questionType": "",
+          "options": [],
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "",
+      "questions": [
+        {
+          "question": "",
+          "questionType": "",
+          "options": [],
+          "required": false
+        }
+      ]
+    }
+  ]
+}
