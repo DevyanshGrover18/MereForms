@@ -56,7 +56,7 @@ const MyForms = () => {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.delete(`${import.meta.env.BASE_URL}/api/forms/${formId}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/forms/${formId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
