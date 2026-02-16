@@ -135,13 +135,13 @@ const Home = () => {
 
     try {
       let response;
-      // Use editingFormId OR currentFormId - whichever exists
       const formIdToUpdate = editingFormId || currentFormId;
+      console.log(formIdToUpdate)
 
       if (formIdToUpdate) {
         // Update existing form
         response = await axios.put(
-          `${import.meta.env.VITE_BASE_URL}/forms/${formIdToUpdate}`,
+          `${import.meta.env.VITE_BASE_URL}/api/forms/${formIdToUpdate}`,
           formDetails,
           {
             headers: {
@@ -173,10 +173,6 @@ const Home = () => {
 
       console.log("Saved form:", response.data);
 
-      // Don't clear the IDs - keep them for future updates
-      // Only clear when explicitly clearing the form
-
-      // Navigate to My Forms
       localStorage.removeItem("categories");
       localStorage.removeItem("formTitle");
       localStorage.removeItem("formDesc");

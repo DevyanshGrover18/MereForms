@@ -8,6 +8,8 @@ const MyForms = () => {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [copiedFormId, setCopiedFormId] = useState(null);
+  const [publishingId, setPublishingId] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,11 +25,14 @@ const MyForms = () => {
     }
 
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/forms`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/forms`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setForms(response.data.forms);
       setLoading(false);
@@ -95,34 +100,29 @@ const MyForms = () => {
 
   const togglePublish = async (formId, currentStatus) => {
     const token = localStorage.getItem("token");
+    setPublishingId(formId); // start loading
 
     try {
       await axios.put(
-        `${import.meta.env.BASE_URL}/api/forms/${formId}`,
+        `${import.meta.env.VITE_BASE_URL}/api/forms/${formId}`,
         { isPublished: !currentStatus },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
-      // Update local state
       setForms(
         forms.map((form) =>
-          form._id === formId
-            ? { ...form, isPublished: !currentStatus }
-            : form
-        )
+          form._id === formId ? { ...form, isPublished: !currentStatus } : form,
+        ),
       );
-
-      // Show success message
-      if (!currentStatus) {
-        alert("Form published! Share the link with others to collect submissions.");
-      }
     } catch (err) {
       console.error("Error toggling publish status:", err);
       alert(err.response?.data?.message || "Failed to update form");
+    } finally {
+      setPublishingId(null); // stop loading
     }
   };
 
@@ -135,7 +135,7 @@ const MyForms = () => {
   };
 
   const filteredForms = forms.filter((form) =>
-    form.formTitle.toLowerCase().includes(searchTerm.toLowerCase())
+    form.formTitle.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const formatDate = (dateString) => {
@@ -360,7 +360,7 @@ const MyForms = () => {
                       <p className="font-semibold text-gray-900">
                         {form.formData?.reduce(
                           (sum, cat) => sum + (cat.questions?.length || 0),
-                          0
+                          0,
                         ) || 0}
                       </p>
                     </div>
@@ -389,13 +389,23 @@ const MyForms = () => {
                   </button>
                   <button
                     onClick={() => togglePublish(form._id, form.isPublished)}
+                    disabled={publishingId === form._id}
                     className={`flex-1 ${
                       form.isPublished
                         ? "bg-orange-600 hover:bg-orange-700"
                         : "bg-green-600 hover:bg-green-700"
-                    } text-white px-3 py-2 rounded transition text-sm`}
+                    } text-white px-3 py-2 rounded transition text-sm flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed`}
                   >
-                    {form.isPublished ? "Unpublish" : "Publish"}
+                    {publishingId === form._id ? (
+                      <>
+                        <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                        Updating...
+                      </>
+                    ) : form.isPublished ? (
+                      "Unpublish"
+                    ) : (
+                      "Publish"
+                    )}
                   </button>
                 </div>
 
