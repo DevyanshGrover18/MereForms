@@ -26,7 +26,7 @@ const PublicFormSubmit = () => {
     try {
       // Fetch form without authentication
       const response = await axios.get(
-        `http://localhost:8000/api/forms/public/${formId}`
+        `${import.meta.env.VITE_BASE_URL}/api/forms/public/${formId}`
       );
 
       if (!response.data.isPublished) {
@@ -84,7 +84,7 @@ const PublicFormSubmit = () => {
     try {
       // Submit form without authentication - backend will handle as guest submission
       await axios.post(
-        `http://localhost:8000/api/forms/public/${formId}/submit`,
+        `${import.meta.env.VITE_BASE_URL}/api/forms/public/${formId}/submit`,
         {
           submitterName: userDetails.name,
           submitterEmail: userDetails.email,

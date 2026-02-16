@@ -47,7 +47,7 @@ const Signup = () => {
       const { confirmPassword, ...signupData } = formData;
       // console.log(signupData)
       const response = await axios.post(
-        "http://localhost:8000/api/auth/signup",
+        `${import.meta.env.VITE_BASE_URL}/api/auth/signup`,
         signupData
       );
 

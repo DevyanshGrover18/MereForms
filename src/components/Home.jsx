@@ -141,7 +141,7 @@ const Home = () => {
       if (formIdToUpdate) {
         // Update existing form
         response = await axios.put(
-          `http://localhost:8000/api/forms/${formIdToUpdate}`,
+          `${import.meta.env.VITE_BASE_URL}/forms/${formIdToUpdate}`,
           formDetails,
           {
             headers: {
@@ -153,7 +153,7 @@ const Home = () => {
       } else {
         // Create new form
         response = await axios.post(
-          "http://localhost:8000/api/forms",
+          `${import.meta.env.VITE_BASE_URL}/api/forms`,
           formDetails,
           {
             headers: {

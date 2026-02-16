@@ -25,7 +25,7 @@ const FormSubmissions = () => {
     try {
       // Fetch form details
       const formResponse = await axios.get(
-        `http://localhost:8000/api/forms/${formId}`,
+        `${import.meta.env.VITE_BASE_URL}/api/forms/${formId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ const FormSubmissions = () => {
 
       // Fetch submissions
       const submissionsResponse = await axios.get(
-        `http://localhost:8000/api/forms/${formId}/submissions`,
+        `${import.meta.env.VITE_BASE_URL}/api/forms/${formId}/submissions`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

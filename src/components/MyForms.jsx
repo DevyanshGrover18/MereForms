@@ -23,7 +23,7 @@ const MyForms = () => {
     }
 
     try {
-      const response = await axios.get("http://localhost:8000/api/forms", {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/forms`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ const MyForms = () => {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.delete(`http://localhost:8000/api/forms/${formId}`, {
+      await axios.delete(`${import.meta.env.BASE_URL}/api/forms/${formId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +98,7 @@ const MyForms = () => {
 
     try {
       await axios.put(
-        `http://localhost:8000/api/forms/${formId}`,
+        `${import.meta.env.BASE_URL}/api/forms/${formId}`,
         { isPublished: !currentStatus },
         {
           headers: {
